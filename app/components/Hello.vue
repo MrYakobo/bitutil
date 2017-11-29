@@ -4,8 +4,11 @@
     <h1 class="title is-1">Bitutil</h1>
   </div>
   <div class="hero-body">
-    <div class="box buttons is-centered has-addons">
-      <input v-model="hex" type="text" class="input mono has-text-centered" placeholder="hex" maxlength="8">
+    <div class="content">
+        <input v-model="hex" type="text" :class="['input mono has-text-centered', bitRecentlySet ? 'thin':'bold']" placeholder="hex" maxlength="8">
+        <input v-model="dec" type="number" :class="['input mono has-text-centered', bitRecentlySet ? 'thin':'bold']" placeholder="dec" maxlength="8">
+    </div>
+    <div class="buttons is-centered has-addons">
       <div v-for="(i,c) in revrange(0,32)">
         <template v-if="c%8==0">
           &nbsp;
@@ -15,21 +18,28 @@
       </div>
     </div>
     </div>
-    <div class="hero-foot">
+    <div class="hero-foot" v-show="bitRecentlySet">
     <div class="columns">
       <div class="column card">
         <p class="subtitle is-2">Hex</p>
-        <span class="mono">{{disp.hex}}</span>
+        <span :class="['mono', bitRecentlySet? 'bold':'thin']">{{disp.hex}}</span>
       </div>
       <div class="column card">
         <p class="subtitle is-2">Dec</p>
-        <span class="mono">{{disp.dec}}</span>
+        <span :class="['mono', bitRecentlySet? 'bold':'thin']">{{disp.dec}}</span>
       </div>
     </div>
     </div>
   </div>
 </template>
 <style>
+  .thin{
+
+  }
+  .bold{
+    font-weight: bold !important;
+    color: #00b9cf;
+  }
   h1.title.is-1{
     font-family: 'Lato';
     font-weight: 300;
@@ -60,7 +70,9 @@
     data() {
       return {
         val: ZEROS,
-        hex: ''
+        hex: '',
+        dec: '',
+        bitRecentlySet: false
       }
     },
     computed: {
@@ -76,11 +88,21 @@
       hex() {
         if (this.hex != '') {
           var arr = pad(parseInt(this.hex, 16).toString(2), 32).split('').map((b) => parseInt(b)).reverse()
-          // this.val = ZEROS.slice(32-arr.length).concat(arr)
           this.val = arr
         } else {
           this.val = ZEROS
         }
+        this.bitRecentlySet = false
+      },
+      dec(){
+        if (this.dec != '') {
+          var arr = pad(parseInt(this.dec, 10).toString(2), 32).split('').map((b) => parseInt(b)).reverse()
+          this.val = arr
+        }
+        else{
+          this.val = ZEROS
+        }
+        this.bitRecentlySet = false
       }
     },
     methods: {
@@ -93,6 +115,7 @@
       },
       toggleBit(i) {
         this.val.splice(i, 1, 1 - this.val[i])
+        this.bitRecentlySet = true
       },
       getBit(i) {
         return this.val[i]
