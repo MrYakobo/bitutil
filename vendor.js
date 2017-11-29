@@ -358,7 +358,7 @@ function assert (condition, message) {
 }
 
 function warn (condition, message) {
-  if ('development' !== 'production' && !condition) {
+  if ('production' !== 'production' && !condition) {
     typeof console !== 'undefined' && console.warn(("[vue-router] " + message));
   }
 }
@@ -457,7 +457,7 @@ function resolveProps (route, config) {
     case 'boolean':
       return config ? route.params : undefined
     default:
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         warn(
           false,
           "props in \"" + (route.path) + "\" is a " + (typeof config) + ", " +
@@ -494,7 +494,7 @@ function resolveQuery (
   try {
     parsedQuery = parse(query || '');
   } catch (e) {
-    'development' !== 'production' && warn(false, e.message);
+    'production' !== 'production' && warn(false, e.message);
     parsedQuery = {};
   }
   for (var key in extraQuery) {
@@ -1395,7 +1395,7 @@ function fillParams (
       (regexpCompileCache[path] = index.compile(path));
     return filler(params || {}, { pretty: true })
   } catch (e) {
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       warn(false, ("missing param for " + routeMsg + ": " + (e.message)));
     }
     return ''
@@ -1445,7 +1445,7 @@ function addRouteRecord (
 ) {
   var path = route.path;
   var name = route.name;
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     assert(path != null, "\"path\" is required in a route configuration.");
     assert(
       typeof route.component !== 'string',
@@ -1483,7 +1483,7 @@ function addRouteRecord (
     // Warn if route is named, does not redirect and has a default child route.
     // If users navigate to this route by name, the default child will
     // not be rendered (GH Issue #629)
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (route.name && !route.redirect && route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
         warn(
           false,
@@ -1532,7 +1532,7 @@ function addRouteRecord (
   if (name) {
     if (!nameMap[name]) {
       nameMap[name] = record;
-    } else if ('development' !== 'production' && !matchAs) {
+    } else if ('production' !== 'production' && !matchAs) {
       warn(
         false,
         "Duplicate named routes definition: " +
@@ -1544,7 +1544,7 @@ function addRouteRecord (
 
 function compileRouteRegex (path, pathToRegexpOptions) {
   var regex = index(path, [], pathToRegexpOptions);
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     var keys = {};
     regex.keys.forEach(function (key) {
       warn(!keys[key.name], ("Duplicate param keys in route with path: \"" + path + "\""));
@@ -1587,7 +1587,7 @@ function normalizeLocation (
     } else if (current.matched.length) {
       var rawPath = current.matched[current.matched.length - 1].path;
       next.path = fillParams(rawPath, params, ("path " + (current.path)));
-    } else if ('development' !== 'production') {
+    } else if ('production' !== 'production') {
       warn(false, "relative params navigation requires a current route.");
     }
     return next
@@ -1651,7 +1651,7 @@ function createMatcher (
 
     if (name) {
       var record = nameMap[name];
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         warn(record, ("Route with name '" + name + "' does not exist"));
       }
       if (!record) { return _createRoute(null, location) }
@@ -1703,7 +1703,7 @@ function createMatcher (
     }
 
     if (!redirect || typeof redirect !== 'object') {
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         warn(
           false, ("invalid redirect option: " + (JSON.stringify(redirect)))
         );
@@ -1724,7 +1724,7 @@ function createMatcher (
     if (name) {
       // resolved named direct
       var targetRecord = nameMap[name];
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         assert(targetRecord, ("redirect failed: named route \"" + name + "\" not found."));
       }
       return match({
@@ -1747,7 +1747,7 @@ function createMatcher (
         hash: hash
       }, undefined, location)
     } else {
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         warn(false, ("invalid redirect option: " + (JSON.stringify(redirect))));
       }
       return _createRoute(null, location)
@@ -1850,7 +1850,7 @@ function handleScroll (
     return
   }
 
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     assert(typeof behavior === 'function', "scrollBehavior must be a function");
   }
 
@@ -2041,7 +2041,7 @@ function resolveAsyncComponents (matched) {
 
         var reject = once(function (reason) {
           var msg = "Failed to resolve async component " + key + ": " + reason;
-          'development' !== 'production' && warn(false, msg);
+          'production' !== 'production' && warn(false, msg);
           if (!error) {
             error = isError(reason)
               ? reason
@@ -2678,7 +2678,7 @@ var VueRouter = function VueRouter (options) {
       this.history = new AbstractHistory(this, options.base);
       break
     default:
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         assert(false, ("invalid mode: " + mode));
       }
   }
@@ -2701,7 +2701,7 @@ prototypeAccessors.currentRoute.get = function () {
 VueRouter.prototype.init = function init (app /* Vue component instance */) {
     var this$1 = this;
 
-  'development' !== 'production' && assert(
+  'production' !== 'production' && assert(
     install.installed,
     "not installed. Make sure to call `Vue.use(VueRouter)` " +
     "before creating root instance."
@@ -3195,12 +3195,12 @@ var config = ({
   /**
    * Show production mode tip message on boot?
    */
-  productionTip: 'development' !== 'production',
+  productionTip: 'production' !== 'production',
 
   /**
    * Whether to enable devtools
    */
-  devtools: 'development' !== 'production',
+  devtools: 'production' !== 'production',
 
   /**
    * Whether to record perf
@@ -3315,7 +3315,7 @@ var warn = noop;
 var tip = noop;
 var formatComponentName = (null); // work around flow check
 
-if ('development' !== 'production') {
+if ('production' !== 'production') {
   var hasConsole = typeof console !== 'undefined';
   var classifyRE = /(?:^|[-_])(\w)/g;
   var classify = function (str) { return str
@@ -3410,7 +3410,7 @@ function handleError (err, vm, info) {
   if (config.errorHandler) {
     config.errorHandler.call(null, err, vm, info);
   } else {
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
     }
     /* istanbul ignore else */
@@ -3840,7 +3840,7 @@ function defineReactive$$1 (
         return
       }
       /* eslint-enable no-self-compare */
-      if ('development' !== 'production' && customSetter) {
+      if ('production' !== 'production' && customSetter) {
         customSetter();
       }
       if (setter) {
@@ -3871,7 +3871,7 @@ function set (target, key, val) {
   }
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
-    'development' !== 'production' && warn(
+    'production' !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +
       'at runtime - declare it upfront in the data option.'
     );
@@ -3896,7 +3896,7 @@ function del (target, key) {
   }
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
-    'development' !== 'production' && warn(
+    'production' !== 'production' && warn(
       'Avoid deleting properties on a Vue instance or its root $data ' +
       '- just set it to null.'
     );
@@ -3938,7 +3938,7 @@ var strats = config.optionMergeStrategies;
 /**
  * Options with restrictions
  */
-if ('development' !== 'production') {
+if ('production' !== 'production') {
   strats.el = strats.propsData = function (parent, child, vm, key) {
     if (!vm) {
       warn(
@@ -4022,7 +4022,7 @@ strats.data = function (
 ) {
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         'The "data" option should be a function ' +
         'that returns a per-instance value in component ' +
         'definitions.',
@@ -4158,7 +4158,7 @@ function normalizeProps (options) {
       if (typeof val === 'string') {
         name = camelize(val);
         res[name] = { type: null };
-      } else if ('development' !== 'production') {
+      } else if ('production' !== 'production') {
         warn('props must be strings when using array syntax.');
       }
     }
@@ -4211,7 +4211,7 @@ function mergeOptions (
   child,
   vm
 ) {
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     checkComponents(child);
   }
 
@@ -4272,7 +4272,7 @@ function resolveAsset (
   if (hasOwn(assets, PascalCaseId)) { return assets[PascalCaseId] }
   // fallback to prototype chain
   var res = assets[id] || assets[camelizedId] || assets[PascalCaseId];
-  if ('development' !== 'production' && warnMissing && !res) {
+  if ('production' !== 'production' && warnMissing && !res) {
     warn(
       'Failed to resolve ' + type.slice(0, -1) + ': ' + id,
       options
@@ -4310,7 +4310,7 @@ function validateProp (
     observe(value);
     observerState.shouldConvert = prevShouldConvert;
   }
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     assertProp(prop, key, value, vm, absent);
   }
   return value
@@ -4326,7 +4326,7 @@ function getPropDefaultValue (vm, prop, key) {
   }
   var def = prop.default;
   // warn against non-factory defaults for Object & Array
-  if ('development' !== 'production' && isObject(def)) {
+  if ('production' !== 'production' && isObject(def)) {
     warn(
       'Invalid default value for prop "' + key + '": ' +
       'Props with type Object/Array must use a factory function ' +
@@ -4456,7 +4456,7 @@ function isType (type, fn) {
 
 var initProxy;
 
-if ('development' !== 'production') {
+if ('production' !== 'production') {
   var allowedGlobals = makeMap(
     'Infinity,undefined,NaN,isFinite,isNaN,' +
     'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
@@ -4529,7 +4529,7 @@ if ('development' !== 'production') {
 var mark;
 var measure;
 
-if ('development' !== 'production') {
+if ('production' !== 'production') {
   var perf = inBrowser && window.performance;
   /* istanbul ignore if */
   if (
@@ -4701,7 +4701,7 @@ function updateListeners (
     event = normalizeEvent(name);
     if (!event.plain) { hasModifier = true; }
     if (isUndef(cur)) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
         vm
       );
@@ -4783,7 +4783,7 @@ function extractPropsFromVNodeData (
   if (isDef(attrs) || isDef(props)) {
     for (var key in propOptions) {
       var altKey = hyphenate(key);
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         var keyInLowerCase = key.toLowerCase();
         if (
           key !== keyInLowerCase &&
@@ -4974,7 +4974,7 @@ function resolveAsyncComponent (
     });
 
     var reject = once(function (reason) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         "Failed to resolve async component: " + (String(factory)) +
         (reason ? ("\nReason: " + reason) : '')
       );
@@ -5017,7 +5017,7 @@ function resolveAsyncComponent (
           setTimeout(function () {
             if (isUndef(factory.resolved)) {
               reject(
-                'development' !== 'production'
+                'production' !== 'production'
                   ? ("timeout (" + (res.timeout) + "ms)")
                   : null
               );
@@ -5165,7 +5165,7 @@ function eventsMixin (Vue) {
 
   Vue.prototype.$emit = function (event) {
     var vm = this;
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       var lowerCaseEvent = event.toLowerCase();
       if (lowerCaseEvent !== event && vm._events[lowerCaseEvent]) {
         tip(
@@ -5385,7 +5385,7 @@ function mountComponent (
   vm.$el = el;
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode;
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       /* istanbul ignore if */
       if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
         vm.$options.el || el) {
@@ -5407,7 +5407,7 @@ function mountComponent (
 
   var updateComponent;
   /* istanbul ignore if */
-  if ('development' !== 'production' && config.performance && mark) {
+  if ('production' !== 'production' && config.performance && mark) {
     updateComponent = function () {
       var name = vm._name;
       var id = vm._uid;
@@ -5449,7 +5449,7 @@ function updateChildComponent (
   parentVnode,
   renderChildren
 ) {
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     isUpdatingChildComponent = true;
   }
 
@@ -5502,7 +5502,7 @@ function updateChildComponent (
     vm.$forceUpdate();
   }
 
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     isUpdatingChildComponent = false;
   }
 }
@@ -5583,7 +5583,7 @@ var index = 0;
 function resetSchedulerState () {
   index = queue.length = activatedChildren.length = 0;
   has = {};
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     circular = {};
   }
   waiting = flushing = false;
@@ -5614,7 +5614,7 @@ function flushSchedulerQueue () {
     has[id] = null;
     watcher.run();
     // in dev build, check and stop circular updates.
-    if ('development' !== 'production' && has[id] != null) {
+    if ('production' !== 'production' && has[id] != null) {
       circular[id] = (circular[id] || 0) + 1;
       if (circular[id] > MAX_UPDATE_COUNT) {
         warn(
@@ -5738,7 +5738,7 @@ var Watcher = function Watcher (
   this.newDeps = [];
   this.depIds = new _Set();
   this.newDepIds = new _Set();
-  this.expression = 'development' !== 'production'
+  this.expression = 'production' !== 'production'
     ? expOrFn.toString()
     : '';
   // parse expression for getter
@@ -5748,7 +5748,7 @@ var Watcher = function Watcher (
     this.getter = parsePath(expOrFn);
     if (!this.getter) {
       this.getter = function () {};
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         "Failed watching path: \"" + expOrFn + "\" " +
         'Watcher only accepts simple dot-delimited paths. ' +
         'For full control, use a function instead.',
@@ -6005,7 +6005,7 @@ function initProps (vm, propsOptions) {
     keys.push(key);
     var value = validateProp(key, propsOptions, propsData, vm);
     /* istanbul ignore else */
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (isReservedAttribute(key) || config.isReservedAttr(key)) {
         warn(
           ("\"" + key + "\" is a reserved attribute and cannot be used as component prop."),
@@ -6045,7 +6045,7 @@ function initData (vm) {
     : data || {};
   if (!isPlainObject(data)) {
     data = {};
-    'development' !== 'production' && warn(
+    'production' !== 'production' && warn(
       'data functions should return an object:\n' +
       'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
       vm
@@ -6058,7 +6058,7 @@ function initData (vm) {
   var i = keys.length;
   while (i--) {
     var key = keys[i];
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
           ("Method \"" + key + "\" has already been defined as a data property."),
@@ -6067,7 +6067,7 @@ function initData (vm) {
       }
     }
     if (props && hasOwn(props, key)) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         "The data property \"" + key + "\" is already declared as a prop. " +
         "Use prop default value instead.",
         vm
@@ -6092,7 +6092,7 @@ function getData (data, vm) {
 var computedWatcherOptions = { lazy: true };
 
 function initComputed (vm, computed) {
-  'development' !== 'production' && checkOptionType(vm, 'computed');
+  'production' !== 'production' && checkOptionType(vm, 'computed');
   var watchers = vm._computedWatchers = Object.create(null);
   // computed properties are just getters during SSR
   var isSSR = isServerRendering();
@@ -6100,7 +6100,7 @@ function initComputed (vm, computed) {
   for (var key in computed) {
     var userDef = computed[key];
     var getter = typeof userDef === 'function' ? userDef : userDef.get;
-    if ('development' !== 'production' && getter == null) {
+    if ('production' !== 'production' && getter == null) {
       warn(
         ("Getter is missing for computed property \"" + key + "\"."),
         vm
@@ -6122,7 +6122,7 @@ function initComputed (vm, computed) {
     // at instantiation here.
     if (!(key in vm)) {
       defineComputed(vm, key, userDef);
-    } else if ('development' !== 'production') {
+    } else if ('production' !== 'production') {
       if (key in vm.$data) {
         warn(("The computed property \"" + key + "\" is already defined in data."), vm);
       } else if (vm.$options.props && key in vm.$options.props) {
@@ -6153,7 +6153,7 @@ function defineComputed (
       ? userDef.set
       : noop;
   }
-  if ('development' !== 'production' &&
+  if ('production' !== 'production' &&
       sharedPropertyDefinition.set === noop) {
     sharedPropertyDefinition.set = function () {
       warn(
@@ -6181,10 +6181,10 @@ function createComputedGetter (key) {
 }
 
 function initMethods (vm, methods) {
-  'development' !== 'production' && checkOptionType(vm, 'methods');
+  'production' !== 'production' && checkOptionType(vm, 'methods');
   var props = vm.$options.props;
   for (var key in methods) {
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (methods[key] == null) {
         warn(
           "Method \"" + key + "\" has an undefined value in the component definition. " +
@@ -6210,7 +6210,7 @@ function initMethods (vm, methods) {
 }
 
 function initWatch (vm, watch) {
-  'development' !== 'production' && checkOptionType(vm, 'watch');
+  'production' !== 'production' && checkOptionType(vm, 'watch');
   for (var key in watch) {
     var handler = watch[key];
     if (Array.isArray(handler)) {
@@ -6247,7 +6247,7 @@ function stateMixin (Vue) {
   dataDef.get = function () { return this._data };
   var propsDef = {};
   propsDef.get = function () { return this._props };
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     dataDef.set = function (newData) {
       warn(
         'Avoid replacing instance root $data. ' +
@@ -6303,7 +6303,7 @@ function initInjections (vm) {
     observerState.shouldConvert = false;
     Object.keys(result).forEach(function (key) {
       /* istanbul ignore else */
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         defineReactive$$1(vm, key, result[key], function () {
           warn(
             "Avoid mutating an injected value directly since the changes will be " +
@@ -6342,7 +6342,7 @@ function resolveInject (inject, vm) {
         }
         source = source.$parent;
       }
-      if ('development' !== 'production' && !source) {
+      if ('production' !== 'production' && !source) {
         warn(("Injection \"" + key + "\" not found"), vm);
       }
     }
@@ -6491,7 +6491,7 @@ function createComponent (
   // if at this stage it's not a constructor or an async component factory,
   // reject.
   if (typeof Ctor !== 'function') {
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       warn(("Invalid Component definition: " + (String(Ctor))), context);
     }
     return
@@ -6661,7 +6661,7 @@ function _createElement (
   normalizationType
 ) {
   if (isDef(data) && isDef((data).__ob__)) {
-    'development' !== 'production' && warn(
+    'production' !== 'production' && warn(
       "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
       'Always create fresh vnode data objects in each render!',
       context
@@ -6677,7 +6677,7 @@ function _createElement (
     return createEmptyVNode()
   }
   // warn against non-primitive key
-  if ('development' !== 'production' &&
+  if ('production' !== 'production' &&
     isDef(data) && isDef(data.key) && !isPrimitive(data.key)
   ) {
     warn(
@@ -6804,7 +6804,7 @@ function renderSlot (
   } else {
     var slotNodes = this.$slots[name];
     // warn duplicate slot usage
-    if (slotNodes && 'development' !== 'production') {
+    if (slotNodes && 'production' !== 'production') {
       slotNodes._rendered && warn(
         "Duplicate presence of slot \"" + name + "\" found in the same render tree " +
         "- this will likely cause render errors.",
@@ -6857,7 +6857,7 @@ function bindObjectProps (
 ) {
   if (value) {
     if (!isObject(value)) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         'v-bind without argument expects an Object or Array value',
         this
       );
@@ -6961,7 +6961,7 @@ function markStaticNode (node, key, isOnce) {
 function bindObjectListeners (data, value) {
   if (value) {
     if (!isPlainObject(value)) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         'v-on without argument expects an Object value',
         this
       );
@@ -7000,7 +7000,7 @@ function initRender (vm) {
   var parentData = parentVnode && parentVnode.data;
 
   /* istanbul ignore else */
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
       !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
     }, true);
@@ -7053,7 +7053,7 @@ function renderMixin (Vue) {
       // return error render result,
       // or previous vnode to prevent render error causing blank component
       /* istanbul ignore else */
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         vnode = vm.$options.renderError
           ? vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e)
           : vm._vnode;
@@ -7063,7 +7063,7 @@ function renderMixin (Vue) {
     }
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
-      if ('development' !== 'production' && Array.isArray(vnode)) {
+      if ('production' !== 'production' && Array.isArray(vnode)) {
         warn(
           'Multiple root nodes returned from render function. Render function ' +
           'should return a single root node.',
@@ -7109,7 +7109,7 @@ function initMixin (Vue) {
 
     var startTag, endTag;
     /* istanbul ignore if */
-    if ('development' !== 'production' && config.performance && mark) {
+    if ('production' !== 'production' && config.performance && mark) {
       startTag = "vue-perf-init:" + (vm._uid);
       endTag = "vue-perf-end:" + (vm._uid);
       mark(startTag);
@@ -7131,7 +7131,7 @@ function initMixin (Vue) {
       );
     }
     /* istanbul ignore else */
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       initProxy(vm);
     } else {
       vm._renderProxy = vm;
@@ -7148,7 +7148,7 @@ function initMixin (Vue) {
     callHook(vm, 'created');
 
     /* istanbul ignore if */
-    if ('development' !== 'production' && config.performance && mark) {
+    if ('production' !== 'production' && config.performance && mark) {
       vm._name = formatComponentName(vm, false);
       mark(endTag);
       measure(((vm._name) + " init"), startTag, endTag);
@@ -7235,7 +7235,7 @@ function dedupe (latest, extended, sealed) {
 }
 
 function Vue$3 (options) {
-  if ('development' !== 'production' &&
+  if ('production' !== 'production' &&
     !(this instanceof Vue$3)
   ) {
     warn('Vue is a constructor and should be called with the `new` keyword');
@@ -7304,7 +7304,7 @@ function initExtend (Vue) {
     }
 
     var name = extendOptions.name || Super.options.name;
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (!/^[a-zA-Z][\w-]*$/.test(name)) {
         warn(
           'Invalid component name: "' + name + '". Component names ' +
@@ -7393,7 +7393,7 @@ function initAssetRegisters (Vue) {
         return this.options[type + 's'][id]
       } else {
         /* istanbul ignore if */
-        if ('development' !== 'production') {
+        if ('production' !== 'production') {
           if (type === 'component' && config.isReservedTag(id)) {
             warn(
               'Do not use built-in or reserved HTML elements as component ' +
@@ -7524,7 +7524,7 @@ function initGlobalAPI (Vue) {
   // config
   var configDef = {};
   configDef.get = function () { return config; };
-  if ('development' !== 'production') {
+  if ('production' !== 'production') {
     configDef.set = function () {
       warn(
         'Do not replace the Vue.config object, set individual fields instead.'
@@ -7786,7 +7786,7 @@ function query (el) {
   if (typeof el === 'string') {
     var selected = document.querySelector(el);
     if (!selected) {
-      'development' !== 'production' && warn(
+      'production' !== 'production' && warn(
         'Cannot find element: ' + el
       );
       return document.createElement('div')
@@ -8015,7 +8015,7 @@ function createPatchFunction (backend) {
     var children = vnode.children;
     var tag = vnode.tag;
     if (isDef(tag)) {
-      if ('development' !== 'production') {
+      if ('production' !== 'production') {
         if (data && data.pre) {
           inPre++;
         }
@@ -8047,7 +8047,7 @@ function createPatchFunction (backend) {
         insert(parentElm, vnode.elm, refElm);
       }
 
-      if ('development' !== 'production' && data && data.pre) {
+      if ('production' !== 'production' && data && data.pre) {
         inPre--;
       }
     } else if (isTrue(vnode.isComment)) {
@@ -8293,7 +8293,7 @@ function createPatchFunction (backend) {
         } else {
           elmToMove = oldCh[idxInOld];
           /* istanbul ignore if */
-          if ('development' !== 'production' && !elmToMove) {
+          if ('production' !== 'production' && !elmToMove) {
             warn(
               'It seems there are duplicate keys that is causing an update error. ' +
               'Make sure each v-for item has a unique key.'
@@ -8410,7 +8410,7 @@ function createPatchFunction (backend) {
       vnode.isAsyncPlaceholder = true;
       return true
     }
-    if ('development' !== 'production') {
+    if ('production' !== 'production') {
       if (!assertNodeMatch(elm, vnode)) {
         return false
       }
@@ -8437,7 +8437,7 @@ function createPatchFunction (backend) {
           if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
             if (i !== elm.innerHTML) {
               /* istanbul ignore if */
-              if ('development' !== 'production' &&
+              if ('production' !== 'production' &&
                 typeof console !== 'undefined' &&
                 !bailed
               ) {
@@ -8463,7 +8463,7 @@ function createPatchFunction (backend) {
             // longer than the virtual children list.
             if (!childrenMatch || childNode) {
               /* istanbul ignore if */
-              if ('development' !== 'production' &&
+              if ('production' !== 'production' &&
                 typeof console !== 'undefined' &&
                 !bailed
               ) {
@@ -8532,7 +8532,7 @@ function createPatchFunction (backend) {
             if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
               invokeInsertHook(vnode, insertedVnodeQueue, true);
               return oldVnode
-            } else if ('development' !== 'production') {
+            } else if ('production' !== 'production') {
               warn(
                 'The client-side rendered virtual DOM tree is not matching ' +
                 'server-rendered content. This is likely caused by incorrect ' +
@@ -9539,7 +9539,7 @@ function enter (vnode, toggleDisplay) {
       : duration
   );
 
-  if ('development' !== 'production' && explicitEnterDuration != null) {
+  if ('production' !== 'production' && explicitEnterDuration != null) {
     checkDuration(explicitEnterDuration, 'enter', vnode);
   }
 
@@ -9645,7 +9645,7 @@ function leave (vnode, rm) {
       : duration
   );
 
-  if ('development' !== 'production' && isDef(explicitLeaveDuration)) {
+  if ('production' !== 'production' && isDef(explicitLeaveDuration)) {
     checkDuration(explicitLeaveDuration, 'leave', vnode);
   }
 
@@ -9864,7 +9864,7 @@ function actuallySetSelected (el, binding, vm) {
   var value = binding.value;
   var isMultiple = el.multiple;
   if (isMultiple && !Array.isArray(value)) {
-    'development' !== 'production' && warn(
+    'production' !== 'production' && warn(
       "<select multiple v-model=\"" + (binding.expression) + "\"> " +
       "expects an Array value for its binding, but got " + (Object.prototype.toString.call(value).slice(8, -1)),
       vm
@@ -10080,7 +10080,7 @@ var Transition = {
     }
 
     // warn multiple elements
-    if ('development' !== 'production' && children.length > 1) {
+    if ('production' !== 'production' && children.length > 1) {
       warn(
         '<transition> can only be used on a single element. Use ' +
         '<transition-group> for lists.',
@@ -10091,7 +10091,7 @@ var Transition = {
     var mode = this.mode;
 
     // warn invalid mode
-    if ('development' !== 'production' &&
+    if ('production' !== 'production' &&
       mode && mode !== 'in-out' && mode !== 'out-in'
     ) {
       warn(
@@ -10214,7 +10214,7 @@ var TransitionGroup = {
           children.push(c);
           map[c.key] = c
           ;(c.data || (c.data = {})).transition = transitionData;
-        } else if ('development' !== 'production') {
+        } else if ('production' !== 'production') {
           var opts = c.componentOptions;
           var name = opts ? (opts.Ctor.options.name || opts.tag || '') : c.tag;
           warn(("<transition-group> children must be keyed: <" + name + ">"));
@@ -10380,14 +10380,14 @@ setTimeout(function () {
   if (config.devtools) {
     if (devtools) {
       devtools.emit('init', Vue$3);
-    } else if ('development' !== 'production' && isChrome) {
+    } else if ('production' !== 'production' && isChrome) {
       console[console.info ? 'info' : 'log'](
         'Download the Vue Devtools extension for a better development experience:\n' +
         'https://github.com/vuejs/vue-devtools'
       );
     }
   }
-  if ('development' !== 'production' &&
+  if ('production' !== 'production' &&
     config.productionTip !== false &&
     inBrowser && typeof console !== 'undefined'
   ) {
@@ -10439,5 +10439,3 @@ require.alias("vue-router/dist/vue-router.common.js", "vue-router");process = re
   
 });})();require('___globals___');
 
-
-//# sourceMappingURL=vendor.js.map

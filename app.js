@@ -149,7 +149,7 @@ var __makeRelativeRequire = function(require, mappings, pref) {
   }
 };
 require.register("App.vue", function(exports, require, module) {
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("#app {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("#app{font-family:Avenir,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-align:center;color:#2c3e50;margin-top:60px}")
 ;(function(){
 'use strict';
 
@@ -162,24 +162,13 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('router-view')],1)}
 __vue__options__.staticRenderFns = []
-if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  module.hot.dispose(__vueify_style_dispose__)
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2e015f16", __vue__options__)
-  } else {
-    hotAPI.reload("data-v-2e015f16", __vue__options__)
-  }
-})()}
+
 });
 
 ;require.register("components/Hello.vue", function(exports, require, module) {
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("h1.title.is-1{\n  font-family: 'Lato';\n  font-weight: 300;\n  font-size: 4rem\n\n}\nbutton{\n  font-family: 'Source Code Pro' !important\n}\n.mono {\n  font-family: 'Source Code Pro';\n  width: 200px;\n  margin: auto;\n  font-size: 1.5em\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".bold{font-weight:700!important;color:#00b9cf}h1.title.is-1{font-family:Lato;font-weight:300;font-size:4rem}button{font-family:Source Code Pro!important}.mono{font-family:Source Code Pro;width:200px;margin:auto;font-size:1.5em}")
 ;(function(){
 'use strict';
 
@@ -201,7 +190,9 @@ exports.default = {
   data: function data() {
     return {
       val: ZEROS,
-      hex: ''
+      hex: '',
+      dec: '',
+      bitRecentlySet: false
     };
   },
 
@@ -220,11 +211,22 @@ exports.default = {
         var arr = pad(parseInt(this.hex, 16).toString(2), 32).split('').map(function (b) {
           return parseInt(b);
         }).reverse();
-
         this.val = arr;
       } else {
         this.val = ZEROS;
       }
+      this.bitRecentlySet = false;
+    },
+    dec: function dec() {
+      if (this.dec != '') {
+        var arr = pad(parseInt(this.dec, 10).toString(2), 32).split('').map(function (b) {
+          return parseInt(b);
+        }).reverse();
+        this.val = arr;
+      } else {
+        this.val = ZEROS;
+      }
+      this.bitRecentlySet = false;
     }
   },
   methods: {
@@ -237,6 +239,7 @@ exports.default = {
     },
     toggleBit: function toggleBit(i) {
       this.val.splice(i, 1, 1 - this.val[i]);
+      this.bitRecentlySet = true;
     },
     getBit: function getBit(i) {
       return this.val[i];
@@ -246,20 +249,9 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hero  has-text-centered"},[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"hero-body"},[_c('div',{staticClass:"box buttons is-centered has-addons"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.hex),expression:"hex"}],staticClass:"input mono has-text-centered",attrs:{"type":"text","placeholder":"hex","maxlength":"8"},domProps:{"value":(_vm.hex)},on:{"input":function($event){if($event.target.composing){ return; }_vm.hex=$event.target.value}}}),_vm._v(" "),_vm._l((_vm.revrange(0,32)),function(i,c){return _c('div',[(c%8==0)?[_vm._v("\n         \n      ")]:_vm._e(),_vm._v(" "),_c('button',{class:['button ', _vm.getBit(i)==0?'is-light':'is-dark'],on:{"click":function($event){_vm.toggleBit(i)}}},[_vm._v(_vm._s(_vm.getBit(i)))]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v(_vm._s(i))])],2)})],2)]),_vm._v(" "),_c('div',{staticClass:"hero-foot"},[_c('div',{staticClass:"columns"},[_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Hex")]),_vm._v(" "),_c('span',{staticClass:"mono"},[_vm._v(_vm._s(_vm.disp.hex))])]),_vm._v(" "),_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Dec")]),_vm._v(" "),_c('span',{staticClass:"mono"},[_vm._v(_vm._s(_vm.disp.dec))])])])])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hero  has-text-centered"},[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"hero-body"},[_c('div',{staticClass:"content"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.hex),expression:"hex"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold'],attrs:{"type":"text","placeholder":"hex","maxlength":"8"},domProps:{"value":(_vm.hex)},on:{"input":function($event){if($event.target.composing){ return; }_vm.hex=$event.target.value}}}),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.dec),expression:"dec"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold'],attrs:{"type":"number","placeholder":"dec","maxlength":"8"},domProps:{"value":(_vm.dec)},on:{"input":function($event){if($event.target.composing){ return; }_vm.dec=$event.target.value}}})]),_vm._v(" "),_c('div',{staticClass:"buttons is-centered has-addons"},_vm._l((_vm.revrange(0,32)),function(i,c){return _c('div',[(c%8==0)?[_vm._v("\n         \n      ")]:_vm._e(),_vm._v(" "),_c('button',{class:['button ', _vm.getBit(i)==0?'is-light':'is-dark'],on:{"click":function($event){_vm.toggleBit(i)}}},[_vm._v(_vm._s(_vm.getBit(i)))]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v(_vm._s(i))])],2)}))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.bitRecentlySet),expression:"bitRecentlySet"}],staticClass:"hero-foot"},[_c('div',{staticClass:"columns"},[_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Hex")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.hex))])]),_vm._v(" "),_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Dec")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.dec))])])])])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hero-head"},[_c('h1',{staticClass:"title is-1"},[_vm._v("Bitutil")])])}]
-if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  module.hot.dispose(__vueify_style_dispose__)
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-8334f096", __vue__options__)
-  } else {
-    hotAPI.rerender("data-v-8334f096", __vue__options__)
-  }
-})()}
+
 });
 
 ;require.register("main.js", function(exports, require, module) {
@@ -333,5 +325,3 @@ require.alias("process/browser.js", "process");process = require('process');requ
   
 });})();require('___globals___');
 
-
-//# sourceMappingURL=app.js.map
