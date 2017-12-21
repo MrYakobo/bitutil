@@ -149,7 +149,6 @@ var __makeRelativeRequire = function(require, mappings, pref) {
   }
 };
 require.register("App.vue", function(exports, require, module) {
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("#app{font-family:Avenir,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-align:center;color:#2c3e50;margin-top:60px}")
 ;(function(){
 'use strict';
 
@@ -168,7 +167,7 @@ __vue__options__.staticRenderFns = []
 });
 
 ;require.register("components/Hello.vue", function(exports, require, module) {
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".bold{font-weight:700!important;color:#00b9cf}h1.title.is-1{font-family:Lato;font-weight:300;font-size:4rem}button{font-family:Source Code Pro!important}.mono{font-family:Source Code Pro;width:200px;margin:auto;font-size:1.5em}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("input.dark::placeholder{color:#555}body,html{overflow:hidden}div.big{width:100vw;height:100vh;padding-top:10vh;padding-bottom:10vh;position:absolute;left:0;top:0}div.dark{background-color:#1f1f1f}card.dark{background-color:inherit}.input.dark{background-color:#1e1e1e;border-color:#000;border:1px solid #0000}button::-moz-focus-inner{border:0}button.absolute{position:absolute;right:10px;top:10px}.animation-fast{transition:all .1s}.animation{transition:all .3s}.faded{opacity:.4}.faded.dark{opacity:.65}.bold{font-weight:700!important;color:#00b9cf}h1.title.is-1{font-family:Lato;font-weight:300;font-size:4rem}button{font-family:Source Code Pro!important}.mono{font-family:Source Code Pro;width:200px;margin:auto;font-size:1.5em}")
 ;(function(){
 'use strict';
 
@@ -189,11 +188,16 @@ exports.default = {
   name: 'hello',
   data: function data() {
     return {
+      amount: 32,
       val: ZEROS,
       hex: '',
       dec: '',
-      bitRecentlySet: false
+      bitRecentlySet: false,
+      darkMode: false
     };
+  },
+  mounted: function mounted() {
+    this.darkMode = eval(localStorage.getItem('darkMode'));
   },
 
   computed: {
@@ -203,12 +207,20 @@ exports.default = {
         hex: int.toString(16).toUpperCase(),
         dec: int.toString(10)
       };
+    },
+    btnClass: function btnClass() {
+      return this.darkMode ? 'is-dark has-text-info' : 'is-inverted is-info';
     }
   },
   watch: {
+    amount: function amount() {
+      ZEROS = new Array(this.amount).fill(0);
+      this.val = ZEROS;
+    },
     hex: function hex() {
       if (this.hex != '') {
-        var arr = pad(parseInt(this.hex, 16).toString(2), 32).split('').map(function (b) {
+        this.dec = '';
+        var arr = pad(parseInt(this.hex, 16).toString(2), this.amount).split('').map(function (b) {
           return parseInt(b);
         }).reverse();
         this.val = arr;
@@ -219,7 +231,8 @@ exports.default = {
     },
     dec: function dec() {
       if (this.dec != '') {
-        var arr = pad(parseInt(this.dec, 10).toString(2), 32).split('').map(function (b) {
+        this.hex = '';
+        var arr = pad(parseInt(this.dec, 10).toString(2), this.amount).split('').map(function (b) {
           return parseInt(b);
         }).reverse();
         this.val = arr;
@@ -230,6 +243,31 @@ exports.default = {
     }
   },
   methods: {
+    bitClass: function bitClass(i) {
+      if (this.darkMode) {
+        return this.getBit(this.amount - i) ? 'is-black has-text-info' : 'is-dark has-text-grey';
+      } else {
+        return ['is-light', 'is-dark'][this.getBit(this.amount - i)];
+      }
+    },
+    shift: function shift(d) {
+      var _this = this;
+
+      this.val = this.val.map(function (v, i) {
+        return _this.val[i + d];
+      }).map(function (f) {
+        return f == null ? 0 : f;
+      });
+      this.bitRecentlySet = !this.val.every(function (f) {
+        return f == 0;
+      });
+    },
+    invert: function invert() {
+      this.val = this.val.map(function (f) {
+        return 1 - f;
+      });
+      this.bitRecentlySet = true;
+    },
     revrange: function revrange(min, max) {
       var a = [];
       for (var i = max - 1; i >= min; i--) {
@@ -243,14 +281,18 @@ exports.default = {
     },
     getBit: function getBit(i) {
       return this.val[i];
+    },
+    toggleDarkMode: function toggleDarkMode() {
+      this.darkMode = !this.darkMode;
+      localStorage.setItem('darkMode', this.darkMode);
     }
   }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hero  has-text-centered"},[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"hero-body"},[_c('div',{staticClass:"content"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.hex),expression:"hex"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold'],attrs:{"type":"text","placeholder":"hex","maxlength":"8"},domProps:{"value":(_vm.hex)},on:{"input":function($event){if($event.target.composing){ return; }_vm.hex=$event.target.value}}}),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.dec),expression:"dec"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold'],attrs:{"type":"number","placeholder":"dec","maxlength":"8"},domProps:{"value":(_vm.dec)},on:{"input":function($event){if($event.target.composing){ return; }_vm.dec=$event.target.value}}})]),_vm._v(" "),_c('div',{staticClass:"buttons is-centered has-addons"},_vm._l((_vm.revrange(0,32)),function(i,c){return _c('div',[(c%8==0)?[_vm._v("\n         \n      ")]:_vm._e(),_vm._v(" "),_c('button',{class:['button ', _vm.getBit(i)==0?'is-light':'is-dark'],on:{"click":function($event){_vm.toggleBit(i)}}},[_vm._v(_vm._s(_vm.getBit(i)))]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v(_vm._s(i))])],2)}))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.bitRecentlySet),expression:"bitRecentlySet"}],staticClass:"hero-foot"},[_c('div',{staticClass:"columns"},[_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Hex")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.hex))])]),_vm._v(" "),_c('div',{staticClass:"column card"},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Dec")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.dec))])])])])])}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hero-head"},[_c('h1',{staticClass:"title is-1"},[_vm._v("Bitutil")])])}]
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['big animation-fast hero has-text-centered', _vm.darkMode ? 'dark' : '']},[_c('div',{staticClass:"hero-head"},[_c('button',{class:['button absolute animation-fast', _vm.darkMode ? 'is-light': 'is-dark' ],on:{"click":_vm.toggleDarkMode}},[_vm._v(" ")]),_vm._v(" "),_c('h1',{staticClass:"title is-1"},[_vm._v("Bitutil")])]),_vm._v(" "),_c('div',{staticClass:"hero-body"},[_c('div',{staticClass:"content",class:[{faded: _vm.bitRecentlySet, dark: _vm.darkMode},'animation']},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.hex),expression:"hex"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold', _vm.darkMode ? 'dark' : ''],attrs:{"type":"text","placeholder":"hex","maxlength":_vm.amount/4},domProps:{"value":(_vm.hex)},on:{"input":function($event){if($event.target.composing){ return; }_vm.hex=$event.target.value}}}),_vm._v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.dec),expression:"dec"}],class:['input mono has-text-centered', _vm.bitRecentlySet ? 'thin':'bold', _vm.darkMode ? 'dark' : ''],attrs:{"type":"number","placeholder":"dec"},domProps:{"value":(_vm.dec)},on:{"input":function($event){if($event.target.composing){ return; }_vm.dec=$event.target.value}}})]),_vm._v(" "),_c('div',{staticClass:"content"},[_c('div',{staticClass:"buttons is-centered has-addons"},[_c('button',{class:['button card ', _vm.btnClass],on:{"click":function($event){_vm.shift(-1)}}},[_vm._v("<<")]),_vm._v(" "),_c('button',{class:['button card ', _vm.btnClass],on:{"click":function($event){_vm.shift(1)}}},[_vm._v(">>")]),_vm._v("\n         \n        "),_c('button',{class:['button card ', _vm.darkMode ? 'is-dark has-text-success':'is-inverted is-success'],on:{"click":function($event){_vm.invert()}}},[_vm._v("I")])])]),_vm._v(" "),_c('div',{staticClass:"buttons is-centered has-addons"},_vm._l((_vm.amount),function(i,c){return _c('div',[(c%8==0)?[_vm._v("\n            \n        ")]:_vm._e(),_vm._v(" "),_c('button',{class:['button ', _vm.bitClass(i)],on:{"click":function($event){_vm.toggleBit(_vm.amount-i)}}},[_vm._v(_vm._s(_vm.getBit(_vm.amount-i)))]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v(_vm._s(_vm.amount-i))])],2)}))]),_vm._v(" "),_c('div',{staticClass:"hero-foot",class:[{faded: !_vm.bitRecentlySet}, 'animation']},[_c('div',{staticClass:"columns"},[_c('div',{class:['column card', {dark: _vm.darkMode}]},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Hex")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.hex))])]),_vm._v(" "),_c('div',{class:['column card', {dark: _vm.darkMode}]},[_c('p',{staticClass:"subtitle is-2"},[_vm._v("Dec")]),_vm._v(" "),_c('span',{class:['mono', _vm.bitRecentlySet? 'bold':'thin']},[_vm._v(_vm._s(_vm.disp.dec))])])])])])}
+__vue__options__.staticRenderFns = []
 
 });
 
@@ -315,7 +357,8 @@ exports.default = new _vueRouter2.default({
   routes: [{
     path: '/',
     name: 'Hello',
-    component: _Hello2.default
+    component: _Hello2.default,
+    mode: 'history'
   }]
 });
 
